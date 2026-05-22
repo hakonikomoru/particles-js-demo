@@ -1,0 +1,22 @@
+{
+  "name": "particles-js-demo",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "vite": "^8.0.12"
+  },
+  "dependencies": {
+    "@tsparticles/all": "^4.0.5",
+    "@tsparticles/confetti": "^4.0.5",
+    "@tsparticles/configs": "^4.0.5",
+    "@tsparticles/engine": "^4.0.5",
+    "@tsparticles/fireworks": "^4.0.5",
+    "@tsparticles/particles": "^4.0.5"
+  }
+}
