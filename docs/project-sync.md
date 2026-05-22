@@ -28,6 +28,7 @@
 │   │   └── index.js
 │   └── lib/
 │       ├── codegen.js
+│       ├── i18n.js
 │       ├── monetization.js
 │       ├── render.js
 │       ├── runtime.js
@@ -79,17 +80,18 @@ VITE_ADSENSE_SLOT_IN_FEED=0987654321
 1. `index.html` が `src/main.js` を読み込みます。
 2. `main.js` が `getCatalog()` でカテゴリとデモ定義を取得します。
 3. `createDemoState()` が各デモの初期状態を作ります。
-4. `renderPage()` がヒーロー、カテゴリナビ、デモ一覧、操作 UI、コード表示を HTML として生成します。
-5. `main.js` が各デモ行にイベントリスナーを設定します。
-6. `ensureEngineLoaded()` で tsParticles の engine/bundle を読み込みます。
-7. `setupMonetization()` が Analytics と AdSense の環境変数を確認し、設定がある場合だけ外部タグを読み込みます。
-8. `IntersectionObserver` により、画面に近いデモだけを遅延レンダリングします。
+4. `src/lib/i18n.js` が保存済み言語またはブラウザ言語から `ja` / `en` を決めます。
+5. `ensureEngineLoaded()` で tsParticles の engine/bundle を読み込みます。
+6. `renderApplication()` が現在の言語で `renderPage()` を呼び、ヒーロー、カテゴリナビ、デモ一覧、操作 UI、コード表示を HTML として生成します。
+7. `main.js` が各デモ行と言語セレクタにイベントリスナーを設定します。
+8. `setupMonetization()` が Analytics と AdSense の環境変数を確認し、設定がある場合だけ外部タグを読み込みます。
+9. `IntersectionObserver` により、画面に近いデモだけを遅延レンダリングします。
 
 ## 主要ファイルの役割
 
 ### `src/main.js`
 
-アプリのエントリーポイントです。カタログ取得、状態作成、HTML 描画、フォーム操作、停止・再開・ランダム・リセットのイベント設定、遅延レンダリングを担当します。
+アプリのエントリーポイントです。カタログ取得、状態作成、HTML 描画、言語切り替え、フォーム操作、停止・再開・ランダム・リセットのイベント設定、遅延レンダリングを担当します。
 
 重要な関数:
 
@@ -113,6 +115,12 @@ tsParticles を実際に動かす処理です。engine ベースのデモと foc
 ### `src/lib/codegen.js`
 
 各デモの右側に表示する実装サンプルコードを生成します。デモ状態が変わると `main.js` 経由で再生成され、現在の設定に近いコードが表示されます。
+
+### `src/lib/i18n.js`
+
+日本語・英語の表示文言を管理します。`getInitialLocale()` が `localStorage` とブラウザ言語から初期言語を決め、`renderPage()` が `getMessages()`, `getLocalizedCategory()`, `getLocalizedDemo()`, `getControlLabel()` を使って表示を差し替えます。
+
+新しい言語を追加する場合は、`supportedLocales` に locale を追加し、`messages`, `categoryText`, `demoDescriptions`, `controlLabels` に翻訳を追加します。
 
 ### `src/lib/monetization.js`
 
@@ -174,6 +182,7 @@ focused API 系デモは `mode` に `particles-api`, `confetti-api`, `fireworks-
 ## 更新時のチェックポイント
 
 - 表示文言を変える: `src/lib/render.js`, `src/catalog/categories.js`, `src/catalog/demos.js`
+- 多言語の文言を変える: `src/lib/i18n.js`
 - 新しいデモを追加する: `src/catalog/demos.js`
 - 操作 UI を増やす: `src/catalog/controls.js`, 必要なら `src/lib/runtime.js` と `src/lib/codegen.js`
 - レイアウトを変える: `src/lib/render.js`, `src/style.css`

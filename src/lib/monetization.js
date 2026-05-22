@@ -7,8 +7,22 @@ const config = {
   },
 }
 
-function appendScript(attributes) {
+let analyticsInitialized = false
+
+function appendScript(attributes, id) {
+  if (id) {
+    const existingScript = document.getElementById(id)
+
+    if (existingScript) {
+      return existingScript
+    }
+  }
+
   const script = document.createElement('script')
+
+  if (id) {
+    script.id = id
+  }
 
   for (const [key, value] of Object.entries(attributes)) {
     if (value === undefined || value === null || value === false) {
@@ -25,14 +39,17 @@ function appendScript(attributes) {
 function setupAnalytics() {
   const { analyticsId } = config
 
-  if (!analyticsId) {
+  if (!analyticsId || analyticsInitialized) {
     return
   }
 
-  appendScript({
-    async: true,
-    src: `https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(analyticsId)}`,
-  })
+  appendScript(
+    {
+      async: true,
+      src: `https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(analyticsId)}`,
+    },
+    'google-analytics-script',
+  )
 
   window.dataLayer = window.dataLayer || []
 
@@ -42,6 +59,7 @@ function setupAnalytics() {
 
   window.gtag('js', new Date())
   window.gtag('config', analyticsId)
+  analyticsInitialized = true
 }
 
 function createAdSlot(unitName, slotId) {
@@ -64,13 +82,16 @@ function setupAds() {
     return
   }
 
-  appendScript({
-    async: true,
-    src: `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${encodeURIComponent(
-      adsenseClient,
-    )}`,
-    crossorigin: 'anonymous',
-  })
+  appendScript(
+    {
+      async: true,
+      src: `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${encodeURIComponent(
+        adsenseClient,
+      )}`,
+      crossorigin: 'anonymous',
+    },
+    'google-adsense-script',
+  )
 
   document.querySelectorAll('[data-ad-unit]').forEach((slot) => {
     const unitName = slot.dataset.adUnit

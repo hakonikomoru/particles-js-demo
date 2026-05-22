@@ -10,12 +10,15 @@ import {
   stopDemo,
 } from './lib/runtime'
 import { getDemoCode } from './lib/codegen'
+import { getInitialLocale, getMessages, saveLocale } from './lib/i18n'
 import { setupMonetization } from './lib/monetization'
 import { cloneValue, randomRange } from './lib/utils'
 
 const app = document.querySelector('#app')
 let catalog
 let demoStateMap
+let currentLocale = getInitialLocale()
+let previewObserver
 
 function escapeHtml(value) {
   return value
@@ -27,20 +30,36 @@ function escapeHtml(value) {
 try {
   catalog = getCatalog()
   demoStateMap = createDemoState(catalog.demos)
-  app.innerHTML = renderPage(catalog, demoStateMap)
 } catch (error) {
+  const copy = getMessages(currentLocale)
+
   app.innerHTML = `
     <main class="layout">
       <section class="hero-panel surface hero-single">
         <div class="hero-copy">
           <span class="eyebrow">Startup Error</span>
-          <h1>Catalog の初期化に失敗しました</h1>
+          <h1>${copy.startupError}</h1>
           <p class="lead">${error instanceof Error ? error.message : 'Unknown startup error'}</p>
         </div>
       </section>
     </main>
   `
   throw error
+}
+
+function resetDemoInstances() {
+  if (!demoStateMap) {
+    return
+  }
+
+  for (const state of demoStateMap.values()) {
+    stopDemo(state)
+    state.instance = undefined
+    state.intervalId = undefined
+    state.initialized = false
+    state.rendering = false
+    state.error = null
+  }
 }
 
 function getDemoRow(id) {
@@ -91,6 +110,7 @@ function syncRow(demoId) {
 async function refreshDemo(demoId) {
   const state = demoStateMap.get(demoId)
   const preview = document.querySelector(`#tsparticles-${demoId}`)
+  const copy = getMessages(currentLocale)
 
   if (!state || !preview || state.rendering) {
     return
@@ -99,7 +119,7 @@ async function refreshDemo(demoId) {
   state.rendering = true
   state.error = null
 
-  preview.innerHTML = '<div class="demo-loading">Loading demo...</div>'
+  preview.innerHTML = `<div class="demo-loading">${copy.loading}</div>`
 
   try {
     await renderDemo(state, preview)
@@ -107,9 +127,9 @@ async function refreshDemo(demoId) {
     if (state.error) {
       preview.innerHTML = `
         <div class="demo-error">
-          <strong>This demo failed to render.</strong>
+          <strong>${copy.renderErrorTitle}</strong>
           <span>${escapeHtml(state.error)}</span>
-          <button class="button secondary compact" data-action="retry" type="button">再生</button>
+          <button class="button secondary compact" data-action="retry" type="button">${copy.retry}</button>
         </div>
       `
     }
@@ -125,6 +145,7 @@ function needsPageReloadForRetry(error) {
 function bindRow(demoId) {
   const row = getDemoRow(demoId)
   const state = demoStateMap.get(demoId)
+  const copy = getMessages(currentLocale)
 
   row.querySelectorAll('[data-field]').forEach((field) => {
     const eventName = field.type === 'checkbox' ? 'change' : 'input'
@@ -189,7 +210,7 @@ function bindRow(demoId) {
     }
 
     retryButton.disabled = true
-    retryButton.textContent = '再生中...'
+    retryButton.textContent = copy.retrying
 
     if (needsPageReloadForRetry(state.error)) {
       window.location.reload()
@@ -201,7 +222,9 @@ function bindRow(demoId) {
 }
 
 function setupLazyRendering() {
-  const observer = new IntersectionObserver(
+  previewObserver?.disconnect()
+
+  previewObserver = new IntersectionObserver(
     (entries) => {
       entries.forEach((entry) => {
         const row = entry.target.closest('[data-demo]')
@@ -230,12 +253,35 @@ function setupLazyRendering() {
     },
   )
 
-  document.querySelectorAll('.demo-preview').forEach((preview) => observer.observe(preview))
+  document.querySelectorAll('.demo-preview').forEach((preview) => previewObserver.observe(preview))
 }
 
-for (const demo of catalog.demos) {
-  syncRow(demo.id)
-  bindRow(demo.id)
+function bindLanguageSwitcher() {
+  document.querySelector('[data-language-select]')?.addEventListener('change', (event) => {
+    if (!(event.target instanceof HTMLSelectElement)) {
+      return
+    }
+
+    currentLocale = event.target.value
+    saveLocale(currentLocale)
+    renderApplication()
+  })
+}
+
+function renderApplication() {
+  previewObserver?.disconnect()
+  resetDemoInstances()
+  document.documentElement.lang = currentLocale
+  app.innerHTML = renderPage(catalog, demoStateMap, currentLocale)
+
+  for (const demo of catalog.demos) {
+    syncRow(demo.id)
+    bindRow(demo.id)
+  }
+
+  bindLanguageSwitcher()
+  setupMonetization()
+  setupLazyRendering()
 }
 
 window.addEventListener('beforeunload', () => {
@@ -245,7 +291,6 @@ window.addEventListener('beforeunload', () => {
 })
 
 void (async () => {
-  setupMonetization()
   await ensureEngineLoaded()
-  setupLazyRendering()
+  renderApplication()
 })()

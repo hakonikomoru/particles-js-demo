@@ -164,6 +164,35 @@ input {
   justify-content: center;
 }
 
+.hero-tools {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.language-switcher {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  border-radius: 999px;
+  background: rgba(30, 41, 59, 0.68);
+  border: 1px solid rgba(148, 163, 184, 0.14);
+}
+
+.language-switcher span {
+  color: #cbd5e1;
+  font-size: 0.84rem;
+  font-weight: 700;
+}
+
+.language-switcher select {
+  color: #f8fafc;
+  background: rgba(15, 23, 42, 0.94);
+  border: 1px solid rgba(148, 163, 184, 0.22);
+  border-radius: 999px;
+  padding: 4px 26px 4px 10px;
+}
+
 .eyebrow {
   display: inline-flex;
   width: fit-content;

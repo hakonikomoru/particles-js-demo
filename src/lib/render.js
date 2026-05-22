@@ -1,10 +1,19 @@
 import { getEscapedDemoCode } from './codegen'
+import {
+  getControlLabel,
+  getLocalizedCategory,
+  getLocalizedDemo,
+  getMessages,
+  supportedLocales,
+} from './i18n'
 
-function renderControl(control, value) {
+function renderControl(control, value, locale) {
+  const label = getControlLabel(control, locale)
+
   if (control.type === 'checkbox') {
     return `
       <label class="mini-toggle">
-        <span>${control.label}</span>
+        <span>${label}</span>
         <input data-field="${control.field}" type="checkbox" ${value ? 'checked' : ''} />
       </label>
     `
@@ -12,7 +21,7 @@ function renderControl(control, value) {
 
   return `
     <label class="inline-control">
-      <span>${control.label}</span>
+      <span>${label}</span>
       <input
         data-field="${control.field}"
         type="range"
@@ -26,32 +35,55 @@ function renderControl(control, value) {
   `
 }
 
-export function renderPage(catalog, demoStateMap) {
+function renderLanguageSwitcher(locale, copy) {
+  return `
+    <label class="language-switcher">
+      <span>${copy.languageLabel}</span>
+      <select data-language-select aria-label="${copy.languageLabel}">
+        ${supportedLocales
+          .map(
+            (option) =>
+              `<option value="${option}" ${option === locale ? 'selected' : ''}>${option.toUpperCase()}</option>`,
+          )
+          .join('')}
+      </select>
+    </label>
+  `
+}
+
+export function renderPage(catalog, demoStateMap, locale) {
+  const copy = getMessages(locale)
+  const categories = catalog.categories.map((category) => getLocalizedCategory(category, locale))
+  const demosByCategory = catalog.demosByCategory.map((category) => ({
+    ...getLocalizedCategory(category, locale),
+    demos: category.demos.map((demo) => getLocalizedDemo(demo, locale)),
+  }))
+
   return `
     <main class="layout">
       <section class="hero-panel surface hero-single">
+        <div class="hero-tools">
+          ${renderLanguageSwitcher(locale, copy)}
+        </div>
         <div class="hero-copy">
-          <span class="eyebrow">tsParticles Demo Tool</span>
-          <h1>tsParticles の表現をカテゴリ別に試せるデモカタログ</h1>
-          <p class="lead">
-            presets, shapes, plugins, paths, palettes, focused APIs を一画面で見比べながら、
-            粒子数・速度・サイズなどの設定をその場で調整できます。
-          </p>
+          <span class="eyebrow">${copy.heroEyebrow}</span>
+          <h1>${copy.heroTitle}</h1>
+          <p class="lead">${copy.heroLead}</p>
           <div class="hero-notes hero-notes-single">
             <div class="note">
-              <strong>Explore by category</strong>
-              <span>tsParticles の主要な表現を用途ごとのカテゴリで整理しています。</span>
+              <strong>${copy.heroNoteCategoryTitle}</strong>
+              <span>${copy.heroNoteCategoryBody}</span>
             </div>
             <div class="note">
-              <strong>Tune each demo</strong>
-              <span>デモごとの操作パネルと実装コードを並べて確認できます。</span>
+              <strong>${copy.heroNoteTuneTitle}</strong>
+              <span>${copy.heroNoteTuneBody}</span>
             </div>
           </div>
         </div>
       </section>
 
       <nav class="category-nav surface">
-        ${catalog.categories
+        ${categories
           .map(
             (category) =>
               `<a href="#category-${category.id}" class="category-link">${category.label}</a>`,
@@ -61,12 +93,9 @@ export function renderPage(catalog, demoStateMap) {
 
       <section class="resource-section surface" aria-labelledby="resources-title">
         <div>
-          <span class="eyebrow">Official resources</span>
-          <h2 id="resources-title">tsParticles 公式リンク</h2>
-          <p>
-            このデモカタログは tsParticles の設定や API を試すための補助ツールです。
-            詳細な仕様、最新のガイド、公式デモは公式リソースを参照してください。
-          </p>
+          <span class="eyebrow">${copy.resourcesEyebrow}</span>
+          <h2 id="resources-title">${copy.resourcesTitle}</h2>
+          <p>${copy.resourcesBody}</p>
         </div>
         <div class="resource-grid">
           <a href="https://particles.js.org/" target="_blank" rel="noreferrer" class="resource-link">
@@ -75,11 +104,11 @@ export function renderPage(catalog, demoStateMap) {
           </a>
           <a href="https://particles.js.org/docs/" target="_blank" rel="noreferrer" class="resource-link">
             <strong>Docs</strong>
-            <span>公式ドキュメント</span>
+            <span>${copy.docsLabel}</span>
           </a>
           <a href="https://particles.js.org/demos/presets" target="_blank" rel="noreferrer" class="resource-link">
             <strong>Demos</strong>
-            <span>公式プリセット一覧</span>
+            <span>${copy.demosLabel}</span>
           </a>
           <a href="https://github.com/tsparticles/tsparticles" target="_blank" rel="noreferrer" class="resource-link">
             <strong>GitHub</strong>
@@ -88,9 +117,9 @@ export function renderPage(catalog, demoStateMap) {
         </div>
       </section>
 
-      <aside class="ad-placement" data-ad-unit="top" aria-label="Advertisement"></aside>
+      <aside class="ad-placement" data-ad-unit="top" aria-label="${copy.adLabel}"></aside>
 
-      ${catalog.demosByCategory
+      ${demosByCategory
         .map(
           (category, index) => `
             <section class="category-section" id="category-${category.id}">
@@ -143,7 +172,7 @@ export function renderPage(catalog, demoStateMap) {
                               <span class="toolbar-dot"></span>
                               <span class="toolbar-dot"></span>
                               <span class="toolbar-dot"></span>
-                              <span class="toolbar-label">Code sample</span>
+                              <span class="toolbar-label">${copy.codeSample}</span>
                             </div>
                             <pre class="code-block"><code data-code="${demo.id}">${getEscapedDemoCode(state)}</code></pre>
                           </aside>
@@ -151,15 +180,17 @@ export function renderPage(catalog, demoStateMap) {
 
                         <div class="demo-controls-row">
                           ${demo.controls
-                            .map((control) => renderControl(control, state.config[control.field]))
+                            .map((control) =>
+                              renderControl(control, state.config[control.field], locale),
+                            )
                             .join('')}
                         </div>
 
                         <div class="demo-actions">
-                          <button class="button secondary" data-action="pause" type="button">停止</button>
-                          <button class="button secondary" data-action="resume" type="button">再開</button>
-                          <button class="button secondary" data-action="randomize" type="button">ランダム</button>
-                          <button class="button primary" data-action="reset" type="button">この行を初期値に戻す</button>
+                          <button class="button secondary" data-action="pause" type="button">${copy.pause}</button>
+                          <button class="button secondary" data-action="resume" type="button">${copy.resume}</button>
+                          <button class="button secondary" data-action="randomize" type="button">${copy.randomize}</button>
+                          <button class="button primary" data-action="reset" type="button">${copy.reset}</button>
                         </div>
                       </article>
                     `
@@ -167,7 +198,7 @@ export function renderPage(catalog, demoStateMap) {
                   .join('')}
               </div>
             </section>
-            ${index === 1 ? '<aside class="ad-placement" data-ad-unit="in-feed" aria-label="Advertisement"></aside>' : ''}
+            ${index === 1 ? `<aside class="ad-placement" data-ad-unit="in-feed" aria-label="${copy.adLabel}"></aside>` : ''}
           `,
         )
         .join('')}
