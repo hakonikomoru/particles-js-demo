@@ -1,6 +1,9 @@
+const defaultAdsenseClient = 'ca-pub-9485679688870074'
+const defaultAnalyticsId = 'G-V5Y6V8DRXT'
+
 const config = {
-  analyticsId: import.meta.env.VITE_GA_MEASUREMENT_ID,
-  adsenseClient: import.meta.env.VITE_ADSENSE_CLIENT,
+  analyticsId: import.meta.env.VITE_GA_MEASUREMENT_ID || defaultAnalyticsId,
+  adsenseClient: import.meta.env.VITE_ADSENSE_CLIENT || defaultAdsenseClient,
   adsenseSlots: {
     top: import.meta.env.VITE_ADSENSE_SLOT_TOP,
     'in-feed': import.meta.env.VITE_ADSENSE_SLOT_IN_FEED,
@@ -10,6 +13,14 @@ const config = {
 let analyticsInitialized = false
 
 function appendScript(attributes, id) {
+  if (attributes.src) {
+    const existingScript = document.querySelector(`script[src="${attributes.src}"]`)
+
+    if (existingScript) {
+      return existingScript
+    }
+  }
+
   if (id) {
     const existingScript = document.getElementById(id)
 
@@ -53,8 +64,10 @@ function setupAnalytics() {
 
   window.dataLayer = window.dataLayer || []
 
-  window.gtag = function gtag() {
-    window.dataLayer.push(arguments)
+  if (typeof window.gtag !== 'function') {
+    window.gtag = function gtag() {
+      window.dataLayer.push(arguments)
+    }
   }
 
   window.gtag('js', new Date())
