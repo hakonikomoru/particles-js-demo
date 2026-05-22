@@ -107,7 +107,7 @@ await fireworks.create(canvas, {
   speed: ${config.speed},
   rate: ${Math.max(1, Math.round(config.count / 20))},
   gravity: 1,
-  sounds: false,
+  sounds: ${bool(state.soundActivated)},
   background: {
     color: ${quote(config.background ?? '#12051f')},
   },

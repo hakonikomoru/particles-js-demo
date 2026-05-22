@@ -12,9 +12,12 @@ function renderControl(control, value, locale) {
 
   if (control.type === 'checkbox') {
     return `
-      <label class="mini-toggle">
+      <label class="mini-toggle ${control.field === 'soundActivated' ? 'mini-toggle-stacked' : ''}">
         <span>${label}</span>
-        <input data-field="${control.field}" type="checkbox" ${value ? 'checked' : ''} />
+        <span class="toggle-control">
+          <input data-field="${control.field}" type="checkbox" ${value ? 'checked' : ''} />
+          <span class="toggle-switch" aria-hidden="true"></span>
+        </span>
       </label>
     `
   }
@@ -49,6 +52,16 @@ function renderLanguageSwitcher(locale, copy) {
       </select>
     </label>
   `
+}
+
+function getControlsForDemo(demo, state) {
+  const controls = [...demo.controls]
+
+  if (state.hasSound) {
+    controls.push({ field: 'soundActivated', label: 'Sound', type: 'checkbox' })
+  }
+
+  return controls
 }
 
 export function renderPage(catalog, demoStateMap, locale) {
@@ -134,6 +147,7 @@ export function renderPage(catalog, demoStateMap, locale) {
                 ${category.demos
                   .map((demo) => {
                     const state = demoStateMap.get(demo.id)
+                    const controls = getControlsForDemo(demo, state)
 
                     return `
                       <article class="demo-row surface" data-demo="${demo.id}">
@@ -179,9 +193,15 @@ export function renderPage(catalog, demoStateMap, locale) {
                         </div>
 
                         <div class="demo-controls-row">
-                          ${demo.controls
+                          ${controls
                             .map((control) =>
-                              renderControl(control, state.config[control.field], locale),
+                              renderControl(
+                                control,
+                                control.field in state.config
+                                  ? state.config[control.field]
+                                  : state[control.field],
+                                locale,
+                              ),
                             )
                             .join('')}
                         </div>

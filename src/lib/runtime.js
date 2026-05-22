@@ -9,6 +9,18 @@ import { cloneValue, deepMerge } from './utils'
 let engineLoaded = false
 let engineLoadPromise
 
+function hasSoundConfig(value) {
+  if (!value || typeof value !== 'object') {
+    return false
+  }
+
+  if ('sounds' in value) {
+    return true
+  }
+
+  return Object.values(value).some((nestedValue) => hasSoundConfig(nestedValue))
+}
+
 function inferConfigFromOptions(options = {}) {
   return {
     count: options.particles?.number?.value ?? 80,
@@ -54,6 +66,9 @@ export function createDemoState(catalogDemos) {
   for (const demo of catalogDemos) {
     const baseConfig =
       demo.config ?? (demo.mode === 'engine' ? inferConfigFromOptions(demo.options) : {})
+    const sourceOptions = demo.mode === 'engine' ? deepMerge(demo.options ?? {}, demo.optionOverrides) : {}
+    const hasSound =
+      (demo.mode === 'engine' && hasSoundConfig(sourceOptions)) || demo.mode === 'fireworks-api'
 
     state.set(demo.id, {
       definition: demo,
@@ -64,6 +79,8 @@ export function createDemoState(catalogDemos) {
       initialized: false,
       rendering: false,
       error: null,
+      hasSound,
+      soundActivated: false,
     })
   }
 
@@ -76,6 +93,9 @@ function applyCommonOverrides(options, config) {
   if (!next.particles) {
     next.particles = {}
   }
+
+  next.fullScreen ??= {}
+  next.fullScreen.enable = false
 
   next.background ??= {}
   next.background.color = config.background ?? next.background.color ?? '#0b1020'
@@ -124,8 +144,17 @@ export function buildEngineOptions(demoState) {
   const definition = demoState.definition
   const optionSource = definition.options ?? {}
   const merged = deepMerge(optionSource, definition.optionOverrides ?? {})
+  const options = applyCommonOverrides(merged, demoState.config)
 
-  return applyCommonOverrides(merged, demoState.config)
+  if (demoState.hasSound && !demoState.soundActivated && options.sounds) {
+    options.sounds = {
+      ...options.sounds,
+      autoPlay: false,
+      enable: false,
+    }
+  }
+
+  return options
 }
 
 export async function renderEngineDemo(demoState, element) {
@@ -231,7 +260,7 @@ export async function renderBundleDemo(demoState, element) {
         min: 0.8,
         max: 1.2,
       },
-      sounds: false,
+      sounds: demoState.soundActivated,
       background: demoState.config.background,
     })
     demoState.instance?.play?.()

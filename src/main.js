@@ -59,11 +59,20 @@ function resetDemoInstances() {
     state.initialized = false
     state.rendering = false
     state.error = null
+    state.soundActivated = false
   }
 }
 
 function getDemoRow(id) {
   return document.querySelector(`[data-demo="${id}"]`)
+}
+
+function getFieldValue(state, fieldName) {
+  if (fieldName in state.config) {
+    return state.config[fieldName]
+  }
+
+  return state[fieldName]
 }
 
 function updateOutputs(demoId) {
@@ -98,9 +107,9 @@ function syncRow(demoId) {
     const name = field.dataset.field
 
     if (field.type === 'checkbox') {
-      field.checked = Boolean(state.config[name])
+      field.checked = Boolean(getFieldValue(state, name))
     } else {
-      field.value = state.config[name] ?? field.min ?? 0
+      field.value = getFieldValue(state, name) ?? field.min ?? 0
     }
   })
 
@@ -152,8 +161,13 @@ function bindRow(demoId) {
 
     field.addEventListener(eventName, async (event) => {
       const name = field.dataset.field
-      state.config[name] =
-        field.type === 'checkbox' ? event.target.checked : Number(event.target.value)
+
+      if (name in state.config) {
+        state.config[name] =
+          field.type === 'checkbox' ? event.target.checked : Number(event.target.value)
+      } else {
+        state[name] = field.type === 'checkbox' ? event.target.checked : Number(event.target.value)
+      }
 
       if (name === 'linkDistance' && state.config.linksEnabled !== undefined) {
         state.config.linksEnabled =
@@ -170,7 +184,12 @@ function bindRow(demoId) {
     pauseDemo(state)
   })
 
-  row.querySelector('[data-action="resume"]').addEventListener('click', () => {
+  row.querySelector('[data-action="resume"]').addEventListener('click', async () => {
+    if (state.hasSound && !state.initialized) {
+      await refreshDemo(demoId)
+      return
+    }
+
     playDemo(state)
   })
 
