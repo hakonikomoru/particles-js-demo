@@ -31,20 +31,20 @@ export function renderPage(catalog, demoStateMap) {
     <main class="layout">
       <section class="hero-panel surface hero-single">
         <div class="hero-copy">
-          <span class="eyebrow">Live tsParticles catalog</span>
-          <h1>カテゴリごとに demo を縦並びで網羅したローカル catalog</h1>
+          <span class="eyebrow">tsParticles Demo Tool</span>
+          <h1>tsParticles の表現をカテゴリ別に試せるデモカタログ</h1>
           <p class="lead">
-            公式サイトで見える demo の考え方に合わせて、presets / shapes / plugins /
-            paths / palettes / focused APIs をカテゴリ分けして並べています。
+            presets, shapes, plugins, paths, palettes, focused APIs を一画面で見比べながら、
+            粒子数・速度・サイズなどの設定をその場で調整できます。
           </p>
           <div class="hero-notes hero-notes-single">
             <div class="note">
-              <strong>Category-based</strong>
-              <span>official site の見せ方に近い単位で整理しています。</span>
+              <strong>Explore by category</strong>
+              <span>tsParticles の主要な表現を用途ごとのカテゴリで整理しています。</span>
             </div>
             <div class="note">
-              <strong>Per-row controls</strong>
-              <span>各 row ごとに個別設定して差分を確認できます。</span>
+              <strong>Tune each demo</strong>
+              <span>デモごとの操作パネルと実装コードを並べて確認できます。</span>
             </div>
           </div>
         </div>
@@ -59,9 +59,40 @@ export function renderPage(catalog, demoStateMap) {
           .join('')}
       </nav>
 
+      <section class="resource-section surface" aria-labelledby="resources-title">
+        <div>
+          <span class="eyebrow">Official resources</span>
+          <h2 id="resources-title">tsParticles 公式リンク</h2>
+          <p>
+            このデモカタログは tsParticles の設定や API を試すための補助ツールです。
+            詳細な仕様、最新のガイド、公式デモは公式リソースを参照してください。
+          </p>
+        </div>
+        <div class="resource-grid">
+          <a href="https://particles.js.org/" target="_blank" rel="noreferrer" class="resource-link">
+            <strong>Website</strong>
+            <span>particles.js.org</span>
+          </a>
+          <a href="https://particles.js.org/docs/" target="_blank" rel="noreferrer" class="resource-link">
+            <strong>Docs</strong>
+            <span>公式ドキュメント</span>
+          </a>
+          <a href="https://particles.js.org/demos/presets" target="_blank" rel="noreferrer" class="resource-link">
+            <strong>Demos</strong>
+            <span>公式プリセット一覧</span>
+          </a>
+          <a href="https://github.com/tsparticles/tsparticles" target="_blank" rel="noreferrer" class="resource-link">
+            <strong>GitHub</strong>
+            <span>tsparticles/tsparticles</span>
+          </a>
+        </div>
+      </section>
+
+      <aside class="ad-placement" data-ad-unit="top" aria-label="Advertisement"></aside>
+
       ${catalog.demosByCategory
         .map(
-          (category) => `
+          (category, index) => `
             <section class="category-section" id="category-${category.id}">
               <div class="category-header surface">
                 <div>
@@ -112,7 +143,7 @@ export function renderPage(catalog, demoStateMap) {
                               <span class="toolbar-dot"></span>
                               <span class="toolbar-dot"></span>
                               <span class="toolbar-dot"></span>
-                              <span class="toolbar-label">Implementation</span>
+                              <span class="toolbar-label">Code sample</span>
                             </div>
                             <pre class="code-block"><code data-code="${demo.id}">${getEscapedDemoCode(state)}</code></pre>
                           </aside>
@@ -136,6 +167,7 @@ export function renderPage(catalog, demoStateMap) {
                   .join('')}
               </div>
             </section>
+            ${index === 1 ? '<aside class="ad-placement" data-ad-unit="in-feed" aria-label="Advertisement"></aside>' : ''}
           `,
         )
         .join('')}

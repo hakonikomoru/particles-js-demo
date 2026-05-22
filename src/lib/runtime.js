@@ -7,6 +7,7 @@ import { fireworks } from '@tsparticles/fireworks'
 import { cloneValue, deepMerge } from './utils'
 
 let engineLoaded = false
+let engineLoadPromise
 
 function inferConfigFromOptions(options = {}) {
   return {
@@ -29,11 +30,22 @@ function inferConfigFromOptions(options = {}) {
 }
 
 export async function ensureEngineLoaded() {
-  if (!engineLoaded) {
-    await loadAll(tsParticles)
-    void configs
-    engineLoaded = true
+  if (engineLoaded) {
+    return
   }
+
+  if (!engineLoadPromise) {
+    engineLoadPromise = (async () => {
+      await loadAll(tsParticles)
+      void configs
+      engineLoaded = true
+    })().catch((error) => {
+      engineLoadPromise = undefined
+      throw error
+    })
+  }
+
+  await engineLoadPromise
 }
 
 export function createDemoState(catalogDemos) {
@@ -231,6 +243,8 @@ export async function renderBundleDemo(demoState, element) {
 
 export async function renderDemo(demoState, element) {
   try {
+    await ensureEngineLoaded()
+
     if (demoState.definition.mode === 'engine') {
       await renderEngineDemo(demoState, element)
       return

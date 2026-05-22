@@ -71,6 +71,63 @@ input {
   gap: 12px;
 }
 
+.resource-section {
+  padding: 20px;
+  border-radius: 22px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(360px, 520px);
+  gap: 18px;
+  align-items: start;
+}
+
+.resource-section p {
+  margin-top: 10px;
+  max-width: 64ch;
+  color: #cbd5e1;
+}
+
+.resource-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.resource-link {
+  min-width: 0;
+  padding: 12px 14px;
+  border-radius: 16px;
+  text-decoration: none;
+  color: inherit;
+  background: rgba(30, 41, 59, 0.68);
+  border: 1px solid rgba(148, 163, 184, 0.12);
+  transition:
+    transform 160ms ease,
+    border-color 160ms ease;
+}
+
+.resource-link:hover {
+  transform: translateY(-1px);
+  border-color: rgba(125, 211, 252, 0.45);
+}
+
+.resource-link strong,
+.resource-link span {
+  display: block;
+}
+
+.resource-link span {
+  margin-top: 4px;
+  color: #94a3b8;
+  font-size: 0.9rem;
+  overflow-wrap: anywhere;
+}
+
+.ad-placement {
+  display: block;
+  min-height: 90px;
+  overflow: hidden;
+}
+
 .category-header {
   padding: 18px 20px;
   border-radius: 22px;
@@ -400,16 +457,39 @@ h2 {
   word-break: break-word;
 }
 
-.demo-error {
+.demo-error,
+.demo-loading {
   position: absolute;
   inset: 0;
-  display: grid;
-  place-items: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
   padding: 16px;
   text-align: center;
+  font-size: 0.9rem;
+}
+
+.demo-error {
   color: #fecaca;
   background: rgba(127, 29, 29, 0.22);
-  font-size: 0.9rem;
+}
+
+.demo-loading {
+  color: #cbd5e1;
+  background: rgba(2, 6, 23, 0.36);
+}
+
+.demo-error strong,
+.demo-error span {
+  display: block;
+  max-width: min(520px, 100%);
+}
+
+.demo-error span {
+  color: #fecdd3;
+  overflow-wrap: anywhere;
 }
 
 .demo-preview canvas,
@@ -496,6 +576,12 @@ h2 {
   transform: translateY(-1px);
 }
 
+.button:disabled {
+  cursor: progress;
+  opacity: 0.72;
+  transform: none;
+}
+
 .button.primary {
   background: linear-gradient(135deg, #8b5cf6, #3b82f6);
 }
@@ -505,9 +591,14 @@ h2 {
   border: 1px solid rgba(148, 163, 184, 0.2);
 }
 
+.button.compact {
+  padding: 8px 14px;
+}
+
 @media (max-width: 1080px) {
   .hero-panel,
-  .hero-single {
+  .hero-single,
+  .resource-section {
     grid-template-columns: 1fr;
   }
 
@@ -543,6 +634,7 @@ h2 {
   }
 
   .hero-notes,
+  .resource-grid,
   .demo-controls-row {
     grid-template-columns: 1fr;
   }

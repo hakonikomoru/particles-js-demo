@@ -10,11 +10,19 @@ import {
   stopDemo,
 } from './lib/runtime'
 import { getDemoCode } from './lib/codegen'
+import { setupMonetization } from './lib/monetization'
 import { cloneValue, randomRange } from './lib/utils'
 
 const app = document.querySelector('#app')
 let catalog
 let demoStateMap
+
+function escapeHtml(value) {
+  return value
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+}
 
 try {
   catalog = getCatalog()
@@ -89,14 +97,29 @@ async function refreshDemo(demoId) {
   }
 
   state.rendering = true
+  state.error = null
 
-  await renderDemo(state, preview)
+  preview.innerHTML = '<div class="demo-loading">Loading demo...</div>'
 
-  if (state.error) {
-    preview.innerHTML = `<div class="demo-error">This demo failed to render.<br>${state.error}</div>`
+  try {
+    await renderDemo(state, preview)
+
+    if (state.error) {
+      preview.innerHTML = `
+        <div class="demo-error">
+          <strong>This demo failed to render.</strong>
+          <span>${escapeHtml(state.error)}</span>
+          <button class="button secondary compact" data-action="retry" type="button">再生</button>
+        </div>
+      `
+    }
+  } finally {
+    state.rendering = false
   }
+}
 
-  state.rendering = false
+function needsPageReloadForRetry(error) {
+  return error?.includes('Register plugins can only be done before calling tsParticles.load()')
 }
 
 function bindRow(demoId) {
@@ -153,6 +176,28 @@ function bindRow(demoId) {
     syncRow(demoId)
     await refreshDemo(demoId)
   })
+
+  row.addEventListener('click', async (event) => {
+    if (!(event.target instanceof Element)) {
+      return
+    }
+
+    const retryButton = event.target.closest('[data-action="retry"]')
+
+    if (!retryButton || !row.contains(retryButton)) {
+      return
+    }
+
+    retryButton.disabled = true
+    retryButton.textContent = '再生中...'
+
+    if (needsPageReloadForRetry(state.error)) {
+      window.location.reload()
+      return
+    }
+
+    await refreshDemo(demoId)
+  })
 }
 
 function setupLazyRendering() {
@@ -200,6 +245,7 @@ window.addEventListener('beforeunload', () => {
 })
 
 void (async () => {
+  setupMonetization()
   await ensureEngineLoaded()
   setupLazyRendering()
 })()

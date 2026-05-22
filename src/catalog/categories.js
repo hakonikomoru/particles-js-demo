@@ -2,31 +2,31 @@ export const categories = [
   {
     id: 'presets',
     label: 'Presets',
-    description: '公式 site で見慣れる完成系の表現をまとめたカテゴリ。',
+    description: 'すぐに背景や演出として使いやすい、完成形に近い tsParticles 設定集。',
   },
   {
     id: 'shapes',
     label: 'Shapes',
-    description: 'shape type ごとの差を見比べるカテゴリ。',
+    description: 'circle, image, text, polygon など、粒子の shape type ごとの見え方を比較できます。',
   },
   {
     id: 'plugins',
     label: 'Plugins & Interactions',
-    description: 'emitters, absorbers, polygon mask, mouse interactions のカテゴリ。',
+    description: 'emitters, absorbers, polygon mask, mouse interactions などの拡張表現を試せます。',
   },
   {
     id: 'paths-effects',
     label: 'Paths & Effects',
-    description: '移動 path や effect の違いを確認するカテゴリ。',
+    description: 'Brownian, grid, spiral などの移動 path と effect 系の違いを確認できます。',
   },
   {
     id: 'palettes',
     label: 'Palettes',
-    description: '色テーマや見た目の方向性を比較するカテゴリ。',
+    description: '色、グラデーション、スタイル設定による印象の違いを比較できます。',
   },
   {
     id: 'bundles',
     label: 'Focused APIs',
-    description: 'particles / confetti / fireworks の focused API を試すカテゴリ。',
+    description: 'particles(), confetti(), fireworks() など、目的別 API の最小構成を試せます。',
   },
 ]
