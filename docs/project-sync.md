@@ -181,6 +181,9 @@ focused API 系デモは `mode` に `particles-api`, `confetti-api`, `fireworks-
 
 ## 更新時のチェックポイント
 
+- Footer に `komolab - こもらぼ -` クレジットを表示する
+- 共通制作名として `komolab - こもらぼ -` を使用する
+- 関連ハッシュタグは `#komolab` / `#こもらぼ` を使う
 - 表示文言を変える: `src/lib/render.js`, `src/catalog/categories.js`, `src/catalog/demos.js`
 - 多言語の文言を変える: `src/lib/i18n.js`
 - 新しいデモを追加する: `src/catalog/demos.js`

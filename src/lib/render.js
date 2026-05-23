@@ -181,15 +181,15 @@ export function renderPage(catalog, demoStateMap, locale) {
                             <div class="demo-preview" id="tsparticles-${demo.id}"></div>
                           </div>
 
-                          <aside class="code-panel">
-                            <div class="preview-toolbar">
+                          <details class="code-panel">
+                            <summary class="preview-toolbar code-summary">
                               <span class="toolbar-dot"></span>
                               <span class="toolbar-dot"></span>
                               <span class="toolbar-dot"></span>
                               <span class="toolbar-label">${copy.codeSample}</span>
-                            </div>
+                            </summary>
                             <pre class="code-block"><code data-code="${demo.id}">${getEscapedDemoCode(state)}</code></pre>
-                          </aside>
+                          </details>
                         </div>
 
                         <div class="demo-controls-row">
@@ -222,6 +222,16 @@ export function renderPage(catalog, demoStateMap, locale) {
           `,
         )
         .join('')}
+
+      <footer class="site-footer surface">
+        <div class="footer-copy">
+          <span class="footer-credit-label">${copy.footerCreditLabel}</span>
+          <span class="footer-credit-name">${copy.footerCreditName}</span>
+        </div>
+        <div class="footer-meta">
+          <span class="footer-hashtags">${copy.footerHashtags}</span>
+        </div>
+      </footer>
     </main>
   `
 }

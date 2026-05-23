@@ -30,6 +30,9 @@ const messages = {
     renderErrorTitle: 'This demo failed to render.',
     startupError: 'Catalog の初期化に失敗しました',
     adLabel: 'Advertisement',
+    footerCreditLabel: '制作・運営',
+    footerCreditName: 'komolab - こもらぼ -',
+    footerHashtags: '#komolab #こもらぼ',
   },
   en: {
     languageLabel: 'Language',
@@ -58,6 +61,9 @@ const messages = {
     renderErrorTitle: 'This demo failed to render.',
     startupError: 'Failed to initialize the catalog',
     adLabel: 'Advertisement',
+    footerCreditLabel: 'Created by',
+    footerCreditName: 'komolab - こもらぼ -',
+    footerHashtags: '#komolab #こもらぼ',
   },
 }
 
