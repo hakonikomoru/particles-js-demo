@@ -1,5 +1,9 @@
 # Project Sync
 
+<!-- sync:auto:meta:start -->
+最終更新の想定リポジトリ: `hakonikomoru/particles-js-demo`（`main`・`4fe48a7`・2026-05-26・`npm run sync:project-docs` 自動反映）
+<!-- sync:auto:meta:end -->
+
 ## このサイトの目的
 
 このサイトは、tsParticles のデモ表現をカテゴリ別に見比べるためのデモツールです。presets, shapes, plugins, paths, palettes, focused APIs を一覧化し、各デモで粒子数・速度・サイズ・リンク・ホバーなどの値を調整しながら、同じ画面で実装コードも確認できます。
@@ -8,34 +12,39 @@
 
 ## 全体構造
 
-```text
-.
-├── index.html
-├── package.json
-├── package-lock.json
-├── vercel.json
-├── .env.example
+> `<!-- sync:auto:... -->` で囲んだブロックは **`npm run sync:project-docs`** が上書きします（手編集しない）。
+
+<!-- sync:auto:directory-tree:start -->
+```
+particles-js-demo/
+├── docs/
+│   └── project-sync.md
 ├── public/
+│   ├── ads.txt
 │   ├── favicon.svg
 │   └── icons.svg
 ├── src/
-│   ├── main.js
-│   ├── style.css
+│   ├── assets/
+│   │   ├── hero.png
+│   │   ├── javascript.svg
+│   │   └── vite.svg
 │   ├── catalog/
 │   │   ├── categories.js
 │   │   ├── controls.js
 │   │   ├── demos.js
 │   │   └── index.js
-│   └── lib/
-│       ├── codegen.js
-│       ├── i18n.js
-│       ├── monetization.js
-│       ├── render.js
-│       ├── runtime.js
-│       └── utils.js
-└── docs/
-    └── project-sync.md
+│   ├── counter.js
+│   ├── lib/
+│   │   ├── codegen.js
+│   │   ├── i18n.js
+│   │   ├── monetization.js
+│   │   ├── render.js
+│   │   ├── runtime.js
+│   │   └── utils.js
+│   ├── main.js
+│   └── style.css
 ```
+<!-- sync:auto:directory-tree:end -->
 
 ## 実行とデプロイ
 

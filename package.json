@@ -9,7 +9,9 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "sync:project-docs": "node scripts/sync-project-docs.mjs",
+    "sync:project-docs:check": "node scripts/sync-project-docs.mjs --check"
   },
   "devDependencies": {
     "vite": "^8.0.12"
