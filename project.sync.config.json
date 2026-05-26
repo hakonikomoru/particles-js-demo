@@ -1,0 +1,16 @@
+{
+  "repo": "hakonikomoru/particles-js-demo",
+  "rootLabel": "particles-js-demo",
+  "treeMaxDepth": 2,
+  "markers": [
+    "meta",
+    "directory-tree"
+  ],
+  "treeEntries": [
+    "docs",
+    "public",
+    "src",
+    "index.html",
+    "vercel.json"
+  ]
+}

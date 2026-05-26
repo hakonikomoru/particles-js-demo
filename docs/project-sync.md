@@ -1,7 +1,7 @@
 # Project Sync
 
 <!-- sync:auto:meta:start -->
-最終更新の想定リポジトリ: `hakonikomoru/particles-js-demo`（`main`・`4fe48a7`・2026-05-26・`npm run sync:project-docs` 自動反映）
+最終更新の想定リポジトリ: `hakonikomoru/particles-js-demo`（`main`・`c7e9930`・2026-05-26・`npm run sync:project-docs` 自動反映）
 <!-- sync:auto:meta:end -->
 
 ## このサイトの目的
