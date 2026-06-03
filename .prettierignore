@@ -1,0 +1,10 @@
+node_modules
+.next
+dist
+out
+build
+coverage
+package-lock.json
+yarn.lock
+*.min.js
+public/maps/*.svg

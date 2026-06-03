@@ -11,10 +11,21 @@
     "build": "vite build",
     "preview": "vite preview",
     "sync:project-docs": "node scripts/sync-project-docs.mjs",
-    "sync:project-docs:check": "node scripts/sync-project-docs.mjs --check"
+    "sync:project-docs:check": "node scripts/sync-project-docs.mjs --check",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "test": "vitest run",
+    "precommit:check": "npm run lint && npm run format:check && npm run test"
   },
   "devDependencies": {
-    "vite": "^8.0.12"
+    "vite": "^8.0.12",
+    "@eslint/js": "^10.0.1",
+    "eslint": "^10.3.0",
+    "globals": "^16.0.0",
+    "typescript-eslint": "^8.59.2",
+    "prettier": "latest",
+    "vitest": "latest"
   },
   "dependencies": {
     "@tsparticles/all": "^4.0.5",

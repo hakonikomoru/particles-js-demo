@@ -1,7 +1,9 @@
 # Project Sync
 
 <!-- sync:auto:meta:start -->
+
 最終更新の想定リポジトリ: `hakonikomoru/particles-js-demo`（`main`・`c7e9930`・2026-05-26・`npm run sync:project-docs` 自動反映）
+
 <!-- sync:auto:meta:end -->
 
 ## このサイトの目的
@@ -15,6 +17,7 @@
 > `<!-- sync:auto:... -->` で囲んだブロックは **`npm run sync:project-docs`** が上書きします（手編集しない）。
 
 <!-- sync:auto:directory-tree:start -->
+
 ```
 particles-js-demo/
 ├── docs/
@@ -44,6 +47,7 @@ particles-js-demo/
 │   ├── main.js
 │   └── style.css
 ```
+
 <!-- sync:auto:directory-tree:end -->
 
 ## 実行とデプロイ
@@ -147,18 +151,18 @@ Google Analytics と Google AdSense の読み込みを担当します。Vite の
 
 ```js
 baseDemo({
-  id: 'my-demo',
-  categoryId: 'presets',
-  label: 'My Demo',
-  description: 'デモの説明文。',
-  configKey: 'basic',
-  features: ['tag'],
+  id: "my-demo",
+  categoryId: "presets",
+  label: "My Demo",
+  description: "デモの説明文。",
+  configKey: "basic",
+  features: ["tag"],
   optionOverrides: {
     particles: {
       move: { speed: 2 },
     },
   },
-})
+});
 ```
 
 focused API 系デモは `mode` に `particles-api`, `confetti-api`, `fireworks-api` のいずれかを指定し、`config` に初期値を持たせます。

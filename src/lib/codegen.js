@@ -1,21 +1,18 @@
 function escapeHtml(value) {
-  return value
-    .replaceAll('&', '&amp;')
-    .replaceAll('<', '&lt;')
-    .replaceAll('>', '&gt;')
+  return value.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;");
 }
 
 function bool(value) {
-  return value ? 'true' : 'false'
+  return value ? "true" : "false";
 }
 
 function quote(value) {
-  return JSON.stringify(value)
+  return JSON.stringify(value);
 }
 
 function engineSnippet(state) {
-  const { definition, config } = state
-  const configKey = definition.configKey ?? 'basic'
+  const { definition, config } = state;
+  const configKey = definition.configKey ?? "basic";
 
   return `import { tsParticles } from "@tsparticles/engine";
 import { loadAll } from "@tsparticles/all";
@@ -29,7 +26,7 @@ await tsParticles.load({
   id: "tsparticles",
   options: {
     ...base,
-    background: { color: ${quote(config.background ?? '#0b1020')} },
+    background: { color: ${quote(config.background ?? "#0b1020")} },
     particles: {
       ...base.particles,
       number: { value: ${config.count} },
@@ -55,11 +52,11 @@ await tsParticles.load({
       },
     },
   },
-});`
+});`;
 }
 
 function particlesSnippet(state) {
-  const { config } = state
+  const { config } = state;
 
   return `import { particles } from "@tsparticles/particles";
 
@@ -69,17 +66,17 @@ await particles.create(canvas, {
   count: ${config.count},
   speed: ${config.speed},
   radius: ${config.size},
-  color: ${quote(config.colors?.[0] ?? '#38bdf8')},
+  color: ${quote(config.colors?.[0] ?? "#38bdf8")},
   shape: ["circle", "square"],
   links: ${bool(config.links ?? true)},
-  linksColor: ${quote(config.linksColor ?? '#a78bfa')},
+  linksColor: ${quote(config.linksColor ?? "#a78bfa")},
   linksLength: 140,
   opacity: ${config.opacity ?? 0.75},
-});`
+});`;
 }
 
 function confettiSnippet(state) {
-  const { config } = state
+  const { config } = state;
 
   return `import { confetti } from "@tsparticles/confetti";
 
@@ -92,11 +89,11 @@ const launch = await confetti.create(canvas, {
   disableForReducedMotion: true,
 });
 
-await launch();`
+await launch();`;
 }
 
 function fireworksSnippet(state) {
-  const { config } = state
+  const { config } = state;
 
   return `import { fireworks } from "@tsparticles/fireworks";
 
@@ -109,27 +106,27 @@ await fireworks.create(canvas, {
   gravity: 1,
   sounds: ${bool(state.soundActivated)},
   background: {
-    color: ${quote(config.background ?? '#12051f')},
+    color: ${quote(config.background ?? "#12051f")},
   },
-});`
+});`;
 }
 
 export function getDemoCode(state) {
-  if (state.definition.mode === 'particles-api') {
-    return particlesSnippet(state)
+  if (state.definition.mode === "particles-api") {
+    return particlesSnippet(state);
   }
 
-  if (state.definition.mode === 'confetti-api') {
-    return confettiSnippet(state)
+  if (state.definition.mode === "confetti-api") {
+    return confettiSnippet(state);
   }
 
-  if (state.definition.mode === 'fireworks-api') {
-    return fireworksSnippet(state)
+  if (state.definition.mode === "fireworks-api") {
+    return fireworksSnippet(state);
   }
 
-  return engineSnippet(state)
+  return engineSnippet(state);
 }
 
 export function getEscapedDemoCode(state) {
-  return escapeHtml(getDemoCode(state))
+  return escapeHtml(getDemoCode(state));
 }

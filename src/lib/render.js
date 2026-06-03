@@ -1,25 +1,25 @@
-import { getEscapedDemoCode } from './codegen'
+import { getEscapedDemoCode } from "./codegen";
 import {
   getControlLabel,
   getLocalizedCategory,
   getLocalizedDemo,
   getMessages,
   supportedLocales,
-} from './i18n'
+} from "./i18n";
 
 function renderControl(control, value, locale) {
-  const label = getControlLabel(control, locale)
+  const label = getControlLabel(control, locale);
 
-  if (control.type === 'checkbox') {
+  if (control.type === "checkbox") {
     return `
-      <label class="mini-toggle ${control.field === 'soundActivated' ? 'mini-toggle-stacked' : ''}">
+      <label class="mini-toggle ${control.field === "soundActivated" ? "mini-toggle-stacked" : ""}">
         <span>${label}</span>
         <span class="toggle-control">
-          <input data-field="${control.field}" type="checkbox" ${value ? 'checked' : ''} />
+          <input data-field="${control.field}" type="checkbox" ${value ? "checked" : ""} />
           <span class="toggle-switch" aria-hidden="true"></span>
         </span>
       </label>
-    `
+    `;
   }
 
   return `
@@ -35,7 +35,7 @@ function renderControl(control, value, locale) {
       />
       <strong data-output="${control.field}">${value}</strong>
     </label>
-  `
+  `;
 }
 
 function renderLanguageSwitcher(locale, copy) {
@@ -46,31 +46,31 @@ function renderLanguageSwitcher(locale, copy) {
         ${supportedLocales
           .map(
             (option) =>
-              `<option value="${option}" ${option === locale ? 'selected' : ''}>${option.toUpperCase()}</option>`,
+              `<option value="${option}" ${option === locale ? "selected" : ""}>${option.toUpperCase()}</option>`,
           )
-          .join('')}
+          .join("")}
       </select>
     </label>
-  `
+  `;
 }
 
 function getControlsForDemo(demo, state) {
-  const controls = [...demo.controls]
+  const controls = [...demo.controls];
 
   if (state.hasSound) {
-    controls.push({ field: 'soundActivated', label: 'Sound', type: 'checkbox' })
+    controls.push({ field: "soundActivated", label: "Sound", type: "checkbox" });
   }
 
-  return controls
+  return controls;
 }
 
 export function renderPage(catalog, demoStateMap, locale) {
-  const copy = getMessages(locale)
-  const categories = catalog.categories.map((category) => getLocalizedCategory(category, locale))
+  const copy = getMessages(locale);
+  const categories = catalog.categories.map((category) => getLocalizedCategory(category, locale));
   const demosByCategory = catalog.demosByCategory.map((category) => ({
     ...getLocalizedCategory(category, locale),
     demos: category.demos.map((demo) => getLocalizedDemo(demo, locale)),
-  }))
+  }));
 
   return `
     <main class="layout">
@@ -101,7 +101,7 @@ export function renderPage(catalog, demoStateMap, locale) {
             (category) =>
               `<a href="#category-${category.id}" class="category-link">${category.label}</a>`,
           )
-          .join('')}
+          .join("")}
       </nav>
 
       <section class="resource-section surface" aria-labelledby="resources-title">
@@ -146,8 +146,8 @@ export function renderPage(catalog, demoStateMap, locale) {
               <div class="demo-list">
                 ${category.demos
                   .map((demo) => {
-                    const state = demoStateMap.get(demo.id)
-                    const controls = getControlsForDemo(demo, state)
+                    const state = demoStateMap.get(demo.id);
+                    const controls = getControlsForDemo(demo, state);
 
                     return `
                       <article class="demo-row surface" data-demo="${demo.id}">
@@ -162,8 +162,8 @@ export function renderPage(catalog, demoStateMap, locale) {
                                 demo.features?.length
                                   ? demo.features
                                       .map((feature) => `<div class="chip small">${feature}</div>`)
-                                      .join('')
-                                  : ''
+                                      .join("")
+                                  : ""
                               }
                             </div>
                           </div>
@@ -203,7 +203,7 @@ export function renderPage(catalog, demoStateMap, locale) {
                                 locale,
                               ),
                             )
-                            .join('')}
+                            .join("")}
                         </div>
 
                         <div class="demo-actions">
@@ -213,15 +213,15 @@ export function renderPage(catalog, demoStateMap, locale) {
                           <button class="button primary" data-action="reset" type="button">${copy.reset}</button>
                         </div>
                       </article>
-                    `
+                    `;
                   })
-                  .join('')}
+                  .join("")}
               </div>
             </section>
-            ${index === 1 ? `<aside class="ad-placement" data-ad-unit="in-feed" aria-label="${copy.adLabel}"></aside>` : ''}
+            ${index === 1 ? `<aside class="ad-placement" data-ad-unit="in-feed" aria-label="${copy.adLabel}"></aside>` : ""}
           `,
         )
-        .join('')}
+        .join("")}
 
       <footer class="site-footer surface">
         <div class="footer-copy">
@@ -233,5 +233,5 @@ export function renderPage(catalog, demoStateMap, locale) {
         </div>
       </footer>
     </main>
-  `
+  `;
 }
