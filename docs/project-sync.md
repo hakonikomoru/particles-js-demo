@@ -2,7 +2,7 @@
 
 <!-- sync:auto:meta:start -->
 
-最終更新の想定リポジトリ: `hakonikomoru/particles-js-demo`（`main`・`c7e9930`・2026-05-26・`npm run sync:project-docs` 自動反映）
+最終更新の想定リポジトリ: `hakonikomoru/particles-js-demo`（`main`・`84f1d52`・2026-11-18・`npm run sync:project-docs` 自動反映）
 
 <!-- sync:auto:meta:end -->
 
@@ -25,7 +25,9 @@ particles-js-demo/
 ├── public/
 │   ├── ads.txt
 │   ├── favicon.svg
-│   └── icons.svg
+│   ├── icons.svg
+│   ├── robots.txt
+│   └── sitemap.xml
 ├── src/
 │   ├── assets/
 │   │   ├── hero.png
@@ -45,6 +47,7 @@ particles-js-demo/
 │   │   ├── runtime.js
 │   │   └── utils.js
 │   ├── main.js
+│   ├── smoke.test.ts
 │   └── style.css
 ```
 
