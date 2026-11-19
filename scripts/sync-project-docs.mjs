@@ -1,6 +1,6 @@
 import { runSync } from "./project-sync-core.mjs";
 
-const ok = runSync(
+const ok = await runSync(
   {
     repo: "hakonikomoru/particles-js-demo",
     rootLabel: "particles-js-demo",

@@ -2,7 +2,7 @@
 
 <!-- sync:auto:meta:start -->
 
-最終更新の想定リポジトリ: `hakonikomoru/particles-js-demo`（`main`・`84f1d52`・2026-11-18・`npm run sync:project-docs` 自動反映）
+最終更新の想定リポジトリ: `hakonikomoru/particles-js-demo`（`main`・`npm run sync:project-docs` 自動反映。生成日時と対象コミットは `git log -1 -- docs/project-sync.md`）
 
 <!-- sync:auto:meta:end -->
 
