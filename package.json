@@ -34,5 +34,8 @@
     "@tsparticles/engine": "^4.0.5",
     "@tsparticles/fireworks": "^4.0.5",
     "@tsparticles/particles": "^4.0.5"
+  },
+  "allowScripts": {
+    "@tsparticles/engine": false
   }
 }
